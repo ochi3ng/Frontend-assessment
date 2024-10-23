@@ -1,7 +1,7 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Album } from '../types';
-import { fetchUsers } from '../hooks/request';
+import { Album, User } from '../types';
+import { fetchUsers, fetchAlbums } from '../hooks/request'; // Assuming you have a fetchAlbums function
 import { useNavigate } from 'react-router-dom';
 
 const UsersPage: React.FC = () => {
@@ -12,33 +12,57 @@ const UsersPage: React.FC = () => {
         queryFn: fetchUsers,
     });
 
-    if (loadingUsers) {
-        return <div className="text-center mt-10 text-lg text-blue-500">Loading...</div>;
+    const { data: albums, isLoading: loadingAlbums, error: albumsError } = useQuery({
+        queryKey: ['albums'],
+        queryFn: fetchAlbums,
+    });
+
+    if (loadingUsers || loadingAlbums) {
+        return <div className="text-center text-lg text-blue-500">Loading, please wait...</div>;
     }
     if (usersError) {
         return <div className="text-red-500 text-center mt-10 text-lg">Error loading users</div>;
     }
+    if (albumsError) {
+        return <div className="text-red-500 text-center mt-10 text-lg">Error loading albums</div>;
+    }
 
+    // Count albums for each user
     const albumCountByUserId: Record<number, number> = {};
-    const albums: Album[] = [];
-
-    albums.forEach((album) => {
+    albums?.forEach((album: Album) => {
         albumCountByUserId[album.userId] = (albumCountByUserId[album.userId] || 0) + 1;
     });
 
     return (
-        <div className="container mx-auto p-2">
-            <h1 className="text-3xl font-bold text-center mb-8">Users List</h1>
+        <div
+            className="container mx-auto p-2"
+            style={{
+                backgroundImage: 'url(https://images.unsplash.com/photo-1619995745882-f4128ac82ad6?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8YmFja2dyb3VuZCUyMGltYWdlfGVufDB8fDB8fHww)',
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+            }}
+        >
+            <h1 className="text-3xl text-white font-bold text-center mb-8">Users List</h1>
             <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {users?.map((user) => (
+                {users?.map((user: User) => (
                     <li
                         key={user.id}
                         className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-200"
                     >
-                        <p className="text-xl font-semibold text-gray-800">
-                            {user.name}
-                            <span className="text-gray-500 ml-2">({albumCountByUserId[user.id] || 0} albums)</span>
-                        </p>
+                        <div className="bg-white shadow-md rounded-lg p-4 max-w-md mx-auto">
+                            <p className="text-xl font-bold text-gray-800 mb-2">
+                                Name: <span className="font-normal">{user.name}</span>
+                            </p>
+                            <p className="text-xl font-bold text-gray-800 mb-2">
+                                Username: <span className="font-normal">{user.username}</span>
+                            </p>
+                            <p className="text-xl font-bold text-gray-800 mb-2">
+                                Email: <span className="font-normal">{user.email}</span>
+                            </p>
+                            <span className="text-gray-500 text-sm">
+                                ({albumCountByUserId[user.id] || 0} albums)
+                            </span>
+                        </div>
                         <button
                             className="mt-4 bg-blue-500 text-white py-2 px-4 rounded"
                             onClick={() => navigate(`/user-albums/${user.id}`)}

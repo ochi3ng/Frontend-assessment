@@ -60,8 +60,15 @@ const UserAlbumPage: React.FC = () => {
     if (error) return <div className="text-red-500 text-center mt-10 text-lg">Error loading albums: {error.message}</div>;
 
     return (
-        <div className="container mx-auto p-2">
-            <h1 className="text-3xl font-bold text-center mb-8">Albums of User {userId}</h1>
+        <div
+            className="container mx-auto p-2"
+            style={{
+                backgroundImage: 'url(https://plus.unsplash.com/premium_photo-1674929041861-27c086fdc864?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8YmFja2dyb3VuZCUyMGltYWdlfGVufDB8fDB8fHww)',
+                backgroundSize: 'cover',
+                backgroundPosition: 'center'
+            }}
+        >
+            <h1 className="text-3xl font-bold text-white text-center mb-8">Albums of User {userId}</h1>
 
             <button
                 className="mb-4 bg-blue-500 text-white py-2 px-4 rounded"

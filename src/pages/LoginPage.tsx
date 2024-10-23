@@ -49,8 +49,8 @@ const LoginPage = () => {
     };
 
     return (
-        <div className="w-full h-screen flex flex-col md:flex-row">
-            <div className="md:w-1/2 h-full flex flex-col bg-[#282c34] items-center justify-center order-2 md:order-1">
+        <div className='w-full h-screen flex flex-col lg:flex-row'>
+            <div className='w-full lg:w-1/2 h-full flex flex-col bg-[#282c34] items-center justify-center p-6'>
                 <LandingPage />
             </div>
 
