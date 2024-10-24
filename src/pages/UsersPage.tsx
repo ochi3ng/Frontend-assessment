@@ -1,8 +1,9 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Album, User } from '../types';
-import { fetchUsers, fetchAlbums } from '../hooks/request'; // Assuming you have a fetchAlbums function
+import { fetchUsers, fetchAlbums } from '../hooks/request';
 import { useNavigate } from 'react-router-dom';
+import LoadingPage from './LoadingPage';
 
 const UsersPage: React.FC = () => {
     const navigate = useNavigate();
@@ -18,7 +19,7 @@ const UsersPage: React.FC = () => {
     });
 
     if (loadingUsers || loadingAlbums) {
-        return <div className="text-center text-lg text-blue-500">Loading, please wait...</div>;
+        return <div><LoadingPage/></div>;
     }
     if (usersError) {
         return <div className="text-red-500 text-center mt-10 text-lg">Error loading users</div>;
@@ -26,8 +27,6 @@ const UsersPage: React.FC = () => {
     if (albumsError) {
         return <div className="text-red-500 text-center mt-10 text-lg">Error loading albums</div>;
     }
-
-    // Count albums for each user
     const albumCountByUserId: Record<number, number> = {};
     albums?.forEach((album: Album) => {
         albumCountByUserId[album.userId] = (albumCountByUserId[album.userId] || 0) + 1;

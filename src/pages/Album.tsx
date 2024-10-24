@@ -1,9 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
-const fetchPhotos = async (albumId) => {
-    const { data } = await axios.get(`https://jsonplaceholder.typicode.com/photos?albumId=${albumId}`);
-    return data;
-};
+import { fetchPhotos } from "../hooks/request";
+
 const Album = ({ album }) => {
     const { data: photos, isLoading: photosLoading, error: photosError } = useQuery(
         ['photos', album.id],
@@ -26,4 +23,5 @@ const Album = ({ album }) => {
         </div>
     );
 };
-export default Album
+
+export default Album;

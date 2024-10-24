@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { fetchAlbum, fetchAlbumPhotos } from '../hooks/request';
 import { Album as AlbumType, Photo } from '../types';
+import LoadingPage from './LoadingPage';
 
 const AlbumPage: React.FC = () => {
     const { albumId } = useParams<{ albumId: string }>();
@@ -18,7 +19,7 @@ const AlbumPage: React.FC = () => {
     });
 
     if (loadingAlbum || loadingPhotos)
-        return <div className="text-center mt-10 text-lg text-blue-500">Loading...</div>;
+        return <div><LoadingPage/></div>;
 
     if (albumError || photosError)
         return <div className="text-red-500 text-center mt-10 text-lg">Error loading data: {albumError?.message || photosError?.message}</div>;
@@ -47,8 +48,6 @@ const AlbumPage: React.FC = () => {
                     <li key={photo.id} className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-200">
                         <img src={photo.thumbnailUrl} alt={photo.title} className="w-full h-48 object-cover rounded mb-2" />
                         <p className="text-xl font-semibold text-gray-800">{photo.title}</p>
-
-                        {/* View Photo Button */}
                         <button
                             className="mt-2 bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 transition-colors duration-200"
                             onClick={() => navigate(`/photo/${photo.id}`)}

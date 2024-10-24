@@ -26,13 +26,6 @@ export const fetchUsers = async (): Promise<User[]> => {
     const response = await axios.get(`${BASE_URL}/users`);
     return response.data;
 };
-export const fetchAlbums = async (userId: number): Promise<Album[]> => {
-    const response = await fetch(`https://jsonplaceholder.typicode.com/albums?userId=${userId}`);
-    if (!response.ok) {
-        throw new Error('Network response was not ok');
-    }
-    return response.json();
-};
 export const fetchAlbum = async (albumId: number) => {
     const response = await fetch(`${BASE_URL}/albums/${albumId}`);
     if (!response.ok) throw new Error('Network response was not ok');
@@ -52,5 +45,15 @@ export const fetchPhoto = async (photoId: string) => {
 
 export const updatePhotoTitle = async (photoId: string, title: string) => {
     const response = await axios.patch(`${BASE_URL}/photos/${photoId}`, { title });
+    return response.data;
+};
+export const fetchPhotos = async (albumId) => {
+    const { data } = await axios.get(`https://jsonplaceholder.typicode.com/photos?albumId=${albumId}`);
+    return data;
+};
+
+export const fetchAlbums = async () => {
+    const response = await axios.get('https://jsonplaceholder.typicode.com/albums');
+    console.log(response.data); // Check what albums are returned
     return response.data;
 };

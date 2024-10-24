@@ -1,16 +1,16 @@
 import { useState } from 'react';
 import { GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
 import { auth } from '../firebaseConfig';
 import LandingPage from './LandingPage';
 
 const LoginPage = () => {
     const navigate = useNavigate();
     const [authing, setAuthing] = useState(false);
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
+    const { register, handleSubmit, formState: { errors } } = useForm();
 
     const signInWithGoogle = async () => {
         setAuthing(true);
@@ -27,10 +27,11 @@ const LoginPage = () => {
             });
     };
 
-    const signInWithEmail = async () => {
+    const signInWithEmail = async (data) => {
         setAuthing(true);
         setError('');
         setSuccessMessage('');
+        const { email, password } = data;
         signInWithEmailAndPassword(auth, email, password)
             .then(response => {
                 console.log(response.user.uid);
@@ -64,30 +65,32 @@ const LoginPage = () => {
                         <div className="text-green-500 mb-4">{successMessage}</div>
                     )}
 
-                    <div className="w-full flex flex-col mb-6">
+                    <form onSubmit={handleSubmit(signInWithEmail)} className="w-full flex flex-col mb-6">
                         <input
                             type="email"
                             placeholder="Email"
                             className="w-full text-white py-2 mb-4 bg-transparent border-b border-gray-500 focus:outline-none focus:border-white transition duration-200"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
+                            {...register('email', { required: 'Email is required', pattern: { value: /^\S+@\S+$/i, message: 'Invalid email address' } })}
                         />
+                        {errors.email && <span className="text-red-500">{errors.email.message}</span>}
+
                         <input
                             type="password"
                             placeholder="Password"
                             className="w-full text-white py-2 mb-4 bg-transparent border-b border-gray-500 focus:outline-none focus:border-white transition duration-200"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
+                            {...register('password', { required: 'Password is required', minLength: { value: 6, message: 'Password must be at least 6 characters' } })}
                         />
-                    </div>
+                        {errors.password && <span className="text-red-500">{errors.password.message}</span>}
 
-                    <button
-                        className="w-full bg-transparent border border-white text-white my-2 font-semibold rounded-md p-4 text-center flex items-center justify-center cursor-pointer hover:bg-gray-600 transition duration-200"
-                        onClick={signInWithEmail}
-                        disabled={authing}
-                    >
-                        Log In With Email and Password
-                    </button>
+                        <button
+                            type="submit"
+                            className="w-full bg-transparent border border-white text-white my-2 font-semibold rounded-md p-4 text-center flex items-center justify-center cursor-pointer hover:bg-gray-600 transition duration-200"
+                            disabled={authing}
+                        >
+                            Log In With Email and Password
+                        </button>
+                    </form>
+
                     {error && <div className="text-red-500 mb-4">{error}</div>}
 
                     <div className="w-full flex items-center justify-center relative py-4">

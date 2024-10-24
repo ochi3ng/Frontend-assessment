@@ -1,80 +1,9 @@
-// import React, { useState } from 'react';
-// import { useQuery, useMutation } from '@tanstack/react-query';
-// import { useParams, useNavigate } from 'react-router-dom';
-// import { fetchPhoto, updatePhotoTitle } from '../hooks/request';
-
-// interface Photo {
-//     id: string;
-//     title: string;
-//     url: string;
-// }
-
-// const PhotoPage: React.FC = () => {
-//     const { photoId } = useParams<{ photoId: string }>();
-//     const navigate = useNavigate();
-
-//     const { data: photo, isLoading, error } = useQuery({
-//         queryKey: ['photo', photoId],
-//         queryFn: () => fetchPhoto(photoId!),
-//     });
-
-//     const mutation = useMutation({
-//         mutationFn: (title: string) => updatePhotoTitle(photoId!, title),
-//         onSuccess: () => {
-//         },
-//     });
-
-//     const [title, setTitle] = useState('');
-
-//     const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-//         setTitle(e.target.value);
-//     };
-
-//     const handleSubmit = (e: React.FormEvent) => {
-//         e.preventDefault();
-//         mutation.mutate(title);
-//     };
-
-//     if (isLoading) return <div>Loading...</div>;
-//     if (error) return <div>Error loading photo</div>;
-
-//     return (
-//         <div className="container mx-auto p-4">
-//             <h1 className="text-2xl font-bold mb-4">Photo Details</h1>
-//             <img src={photo.url} alt={photo.title} className="mb-4 w-full h-auto" />
-//             <form onSubmit={handleSubmit} className="flex flex-col">
-//                 <label className="mb-2">
-//                     Title:
-//                     <input
-//                         type="text"
-//                         value={title || photo.title}
-//                         onChange={handleTitleChange}
-//                         className="border rounded p-2 w-full"
-//                     />
-//                 </label>
-//                 <button type="submit" className="bg-blue-500 text-white rounded p-2">
-//                     Update Title
-//                 </button>
-//             </form>
-//             {mutation.isLoading && <div>Updating...</div>}
-//             {mutation.isError && <div>Error updating title</div>}
-//             {mutation.isSuccess && <div>Title updated successfully!</div>}
-//         </div>
-//     );
-// };
-
-// export default PhotoPage;
-
-import React, { useState } from 'react';
+import React from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { useParams, useNavigate } from 'react-router-dom';
 import { fetchPhoto, updatePhotoTitle } from '../hooks/request';
-
-interface Photo {
-    id: string;
-    title: string;
-    url: string;
-}
+import LoadingPage from './LoadingPage';
+import { useForm } from 'react-hook-form';
 
 const PhotoPage: React.FC = () => {
     const { photoId } = useParams<{ photoId: string }>();
@@ -87,77 +16,72 @@ const PhotoPage: React.FC = () => {
 
     const mutation = useMutation({
         mutationFn: (title: string) => updatePhotoTitle(photoId!, title),
-        onSuccess: () => {
-            // Handle success
+        onSuccess: () => { },
+    });
+
+    const { register, handleSubmit, setValue } = useForm({
+        defaultValues: {
+            title: photo?.title || '',
         },
     });
 
-    const [title, setTitle] = useState('');
-
-    const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setTitle(e.target.value);
+    const onSubmit = (data: { title: string }) => {
+        mutation.mutate(data.title);
     };
+    React.useEffect(() => {
+        if (photo) {
+            setValue('title', photo.title);
+        }
+    }, [photo, setValue]);
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        mutation.mutate(title);
-    };
-
-    if (isLoading) return <div className="text-center text-blue-500 text-lg">Loading...</div>;
+    if (isLoading) return <div><LoadingPage /></div>;
     if (error) return <div className="text-red-500 text-center mt-4">Error loading photo</div>;
 
     return (
-        <div className="container mx-auto p-6">
-            <h1 className="text-3xl font-bold text-gray-800 mb-6">Photo Details</h1>
+        <div className="container mx-auto p-6 max-w-4xl">
+            <h1 className="text-4xl font-bold text-gray-900 mb-6 text-center">Photo Details</h1>
 
-            <div className="flex flex-col md:flex-row gap-8">
-                {/* Photo Display */}
+            <div className="flex flex-col md:flex-row gap-8 items-start">
                 <div className="flex-1">
                     <img
                         src={photo.url}
                         alt={photo.title}
-                        className="w-full h-auto rounded shadow-lg object-cover mb-4"
+                        className="w-full h-auto rounded-lg shadow-lg object-cover mb-4 transform hover:scale-105 transition duration-300"
                     />
                 </div>
-
-                {/* Photo Title Update Form */}
                 <div className="flex-1">
-                    <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-lg">
+                    <form onSubmit={handleSubmit(onSubmit)} className="bg-white p-6 rounded-lg shadow-xl">
                         <div className="mb-4">
-                            <label className="block text-gray-700 text-lg font-medium mb-2">
-                                Title:
+                            <label className="block text-gray-700 text-lg font-semibold mb-2">
+                                Edit Title:
                             </label>
                             <input
                                 type="text"
-                                value={title || photo.title}
-                                onChange={handleTitleChange}
-                                className="border border-gray-300 rounded-lg p-3 w-full focus:outline-none focus:border-blue-500"
+                                {...register('title', { required: 'Title is required' })}
+                                className="border border-gray-300 rounded-lg p-3 w-full focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
                                 placeholder="Edit photo title"
                             />
                         </div>
+                        {mutation.isError && (
+                            <div className="mt-4 text-red-500 text-center">Error updating title</div>
+                        )}
+                        {mutation.isSuccess && (
+                            <div className="mt-4 text-green-500 text-center">Title updated successfully!</div>
+                        )}
                         <button
                             type="submit"
-                            className="w-full bg-blue-500 text-white rounded-lg py-3 font-semibold transition duration-200 hover:bg-blue-600"
+                            className="w-full bg-blue-600 text-white rounded-lg py-3 font-semibold transition duration-300 hover:bg-blue-700 hover:shadow-lg"
+                            disabled={mutation.isLoading}
                         >
-                            Update Title
+                            {mutation.isLoading ? 'Updating...' : 'Update Title'}
                         </button>
                     </form>
-
-                    {mutation.isLoading && (
-                        <div className="mt-4 text-blue-500">Updating...</div>
-                    )}
-                    {mutation.isError && (
-                        <div className="mt-4 text-red-500">Error updating title</div>
-                    )}
-                    {mutation.isSuccess && (
-                        <div className="mt-4 text-green-500">Title updated successfully!</div>
-                    )}
                 </div>
             </div>
 
             <button
                 onClick={() => navigate(-1)}
-                className="mt-8 bg-gray-600 text-white rounded-lg px-6 py-3 font-semibold hover:bg-gray-700"
+                className="mt-8 bg-gray-600 text-white rounded-lg px-6 py-3 font-semibold hover:bg-gray-700 transition duration-300 mx-auto block"
             >
                 Go Back
             </button>
@@ -166,4 +90,3 @@ const PhotoPage: React.FC = () => {
 };
 
 export default PhotoPage;
-
