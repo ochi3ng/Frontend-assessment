@@ -2,10 +2,12 @@ import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Album, User } from '../types';
 import { fetchUsers, fetchAlbums } from '../hooks/request';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import LoadingPage from './LoadingPage';
 
 const UsersPage: React.FC = () => {
+
+    let [searchParams, setSearchParams] = useSearchParams();
     const navigate = useNavigate();
 
     const { data: users, isLoading: loadingUsers, error: usersError } = useQuery({
@@ -31,6 +33,10 @@ const UsersPage: React.FC = () => {
     albums?.forEach((album: Album) => {
         albumCountByUserId[album.userId] = (albumCountByUserId[album.userId] || 0) + 1;
     });
+    const viewTitle = (user) => {
+        setSearchParams({user:'user'})      
+          navigate(`/user-albums/${user.id}`)
+    }
 
     return (
         <div
@@ -64,7 +70,7 @@ const UsersPage: React.FC = () => {
                         </div>
                         <button
                             className="mt-4 bg-blue-500 text-white py-2 px-4 rounded"
-                            onClick={() => navigate(`/user-albums/${user.id}`)}
+                            onClick={() => viewTitle(user) }
                         >
                             View Albums
                         </button>

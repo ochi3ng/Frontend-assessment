@@ -14,15 +14,15 @@ const SignupPage = () => {
 
     const signUpWithGoogle = async () => {
         setAuthing(true);
-        signInWithPopup(auth, new GoogleAuthProvider())
-            .then(response => {
-                console.log(response.user.uid);
-                navigate('/user');
-            })
-            .catch(error => {
-                console.log(error);
-                setAuthing(false);
-            });
+        try {
+            const response = await signInWithPopup(auth, new GoogleAuthProvider());
+            const token = await response.user.getIdToken();
+            localStorage.setItem('authToken', token);
+            navigate('/user');
+        } catch (error) {
+            console.log(error);
+            setAuthing(false);
+        }
     };
 
     const signUpWithEmail = async (data) => {
@@ -36,16 +36,16 @@ const SignupPage = () => {
         setAuthing(true);
         setError('');
 
-        createUserWithEmailAndPassword(auth, email, password)
-            .then(response => {
-                console.log(response.user.uid);
-                navigate('/login');
-            })
-            .catch(error => {
-                console.log(error);
-                setError(error.message);
-                setAuthing(false);
-            });
+        try {
+            const response = await createUserWithEmailAndPassword(auth, email, password);
+            const token = await response.user.getIdToken();
+            localStorage.setItem('authToken', token);
+            navigate('/login');
+        } catch (error) {
+            console.log(error);
+            setError(error.message);
+            setAuthing(false);
+        }
     };
 
     return (

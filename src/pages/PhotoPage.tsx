@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { useParams, useNavigate } from 'react-router-dom';
 import { fetchPhoto, updatePhotoTitle } from '../hooks/request';
@@ -25,10 +25,13 @@ const PhotoPage: React.FC = () => {
         },
     });
 
+    const [isImageLoading, setIsImageLoading] = useState(true);
+
     const onSubmit = (data: { title: string }) => {
         mutation.mutate(data.title);
     };
-    React.useEffect(() => {
+
+    useEffect(() => {
         if (photo) {
             setValue('title', photo.title);
         }
@@ -38,15 +41,24 @@ const PhotoPage: React.FC = () => {
     if (error) return <div className="text-red-500 text-center mt-4">Error loading photo</div>;
 
     return (
-        <div className="container mx-auto p-6 max-w-4xl">
-            <h1 className="text-4xl font-bold text-gray-900 mb-6 text-center">Photo Details</h1>
+        <div
+            className="container mx-auto p-2"
+            style={{
+                backgroundImage: 'url(https://images.unsplash.com/photo-1619995745882-f4128ac82ad6?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8YmFja2dyb3VuZCUyMGltYWdlfGVufDB8fDB8fHww)',
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+            }}
+        >
+            <h1 className="text-4xl font-bold text-white mb-6 text-center">Photo Details</h1>
 
             <div className="flex flex-col md:flex-row gap-8 items-start">
                 <div className="flex-1">
+                    {isImageLoading && <LoadingPage />}
                     <img
                         src={photo.url}
                         alt={photo.title}
-                        className="w-full h-auto rounded-lg shadow-lg object-cover mb-4 transform hover:scale-105 transition duration-300"
+                        className={`w-full h-auto rounded-lg shadow-lg object-cover mb-4 transform transition duration-300 ${isImageLoading ? 'hidden' : 'block'}`}
+                        onLoad={() => setIsImageLoading(false)}
                     />
                 </div>
                 <div className="flex-1">
@@ -66,7 +78,7 @@ const PhotoPage: React.FC = () => {
                             <div className="mt-4 text-red-500 text-center">Error updating title</div>
                         )}
                         {mutation.isSuccess && (
-                            <div className="mt-4 text-green-500 text-center">Title updated successfully!</div>
+                            <div className="mt-4 text-blue-500 text-center">Title updated successfully!</div>
                         )}
                         <button
                             type="submit"

@@ -15,16 +15,16 @@ const LoginPage = () => {
     const signInWithGoogle = async () => {
         setAuthing(true);
         setSuccessMessage('');
-        signInWithPopup(auth, new GoogleAuthProvider())
-            .then(response => {
-                console.log(response.user.uid);
-                setSuccessMessage('User logged in successfully!');
-                navigate('/user');
-            })
-            .catch(error => {
-                console.log(error);
-                setAuthing(false);
-            });
+        try {
+            const response = await signInWithPopup(auth, new GoogleAuthProvider());
+            const token = await response.user.getIdToken();
+            localStorage.setItem('authToken', token);
+            setSuccessMessage('User logged in successfully!');
+            navigate('/user');
+        } catch (error) {
+            console.log(error);
+            setAuthing(false);
+        }
     };
 
     const signInWithEmail = async (data) => {
@@ -32,21 +32,21 @@ const LoginPage = () => {
         setError('');
         setSuccessMessage('');
         const { email, password } = data;
-        signInWithEmailAndPassword(auth, email, password)
-            .then(response => {
-                console.log(response.user.uid);
-                setSuccessMessage('User logged in successfully!');
-                navigate('/user');
-            })
-            .catch(error => {
-                console.log(error);
-                if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
-                    setError('Invalid login credentials. Please check your email and password.');
-                } else {
-                    setError('Invalid login credentials. Please check your email or Password.');
-                }
-                setAuthing(false);
-            });
+        try {
+            const response = await signInWithEmailAndPassword(auth, email, password);
+            const token = await response.user.getIdToken();
+            localStorage.setItem('authToken', token);
+            setSuccessMessage('User logged in successfully!');
+            navigate('/user');
+        } catch (error) {
+            console.log(error);
+            if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+                setError('Invalid login credentials. Please check your email and password.');
+            } else {
+                setError('Invalid login credentials. Please check your email or Password.');
+            }
+            setAuthing(false);
+        }
     };
 
     return (
@@ -62,7 +62,7 @@ const LoginPage = () => {
                         <p className="text-md md:text-lg mb-4">Welcome Back! Please enter your details.</p>
                     </div>
                     {successMessage && (
-                        <div className="text-green-500 mb-4">{successMessage}</div>
+                        <div className="text-blue-500 mb-4">{successMessage}</div>
                     )}
 
                     <form onSubmit={handleSubmit(signInWithEmail)} className="w-full flex flex-col mb-6">
