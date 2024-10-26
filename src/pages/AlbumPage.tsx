@@ -1,5 +1,5 @@
 import React from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate} from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { fetchAlbum, fetchAlbumPhotos } from '../hooks/request';
 import { Album as AlbumType, Photo } from '../types';
@@ -7,6 +7,7 @@ import LoadingPage from './LoadingPage';
 
 const AlbumPage: React.FC = () => {
     const { albumId } = useParams<{ albumId: string }>();
+
     const navigate = useNavigate();
 
     const { data: album, isLoading: loadingAlbum, error: albumError } = useQuery<AlbumType, Error>({
@@ -39,17 +40,15 @@ const AlbumPage: React.FC = () => {
                 className="mb-4 bg-blue-500 text-white py-2 px-4 rounded"
                 onClick={() => navigate(-1)}
             >
-                Back
+                Go Back To Albums
             </button>
-
-            <h2 className="text-2xl text-white font-semibold mb-4">Photos</h2>
             <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {photos?.map((photo: Photo) => (
                     <li key={photo.id} className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-200">
                         <img src={photo.thumbnailUrl} alt={photo.title} className="w-full h-48 object-cover rounded mb-2" />
                         <p className="text-xl font-semibold text-gray-800">{photo.title}</p>
                         <button
-                            className="mt-2 bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 transition-colors duration-200"
+                            className="mt-2 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition-colors duration-200"
                             onClick={() => navigate(`/photo/${photo.id}`)}
                         >
                             View Photo

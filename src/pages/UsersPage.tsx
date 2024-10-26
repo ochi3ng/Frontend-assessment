@@ -2,19 +2,16 @@ import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Album, User } from '../types';
 import { fetchUsers, fetchAlbums } from '../hooks/request';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import LoadingPage from './LoadingPage';
 
 const UsersPage: React.FC = () => {
-
-    let [searchParams, setSearchParams] = useSearchParams();
     const navigate = useNavigate();
 
     const { data: users, isLoading: loadingUsers, error: usersError } = useQuery({
         queryKey: ['users'],
         queryFn: fetchUsers,
     });
-
     const { data: albums, isLoading: loadingAlbums, error: albumsError } = useQuery({
         queryKey: ['albums'],
         queryFn: fetchAlbums,
@@ -33,9 +30,8 @@ const UsersPage: React.FC = () => {
     albums?.forEach((album: Album) => {
         albumCountByUserId[album.userId] = (albumCountByUserId[album.userId] || 0) + 1;
     });
-    const viewTitle = (user) => {
-        setSearchParams({user:'user'})      
-          navigate(`/user-albums/${user.id}`)
+    const viewTitle = (user) => {    
+        navigate(`/user-albums/${user.id}?user=${user.name}`)
     }
 
     return (
@@ -70,7 +66,7 @@ const UsersPage: React.FC = () => {
                         </div>
                         <button
                             className="mt-4 bg-blue-500 text-white py-2 px-4 rounded"
-                            onClick={() => viewTitle(user) }
+                            onClick={() => viewTitle(user)}
                         >
                             View Albums
                         </button>

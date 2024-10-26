@@ -3,14 +3,15 @@ import { getAuth, GoogleAuthProvider, signInWithPopup, createUserWithEmailAndPas
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import LandingPage from './LandingPage';
+import { Tdata } from '../types';
 
 const SignupPage = () => {
     const auth = getAuth();
     const navigate = useNavigate();
 
     const [authing, setAuthing] = useState(false);
-    const [error, setError] = useState('');
-    const { register, handleSubmit, formState: { errors } } = useForm();
+    const [error, setError] = useState<string>('');
+    const { register, handleSubmit, formState: { errors } } = useForm<Tdata>();
 
     const signUpWithGoogle = async () => {
         setAuthing(true);
@@ -25,7 +26,7 @@ const SignupPage = () => {
         }
     };
 
-    const signUpWithEmail = async (data) => {
+    const signUpWithEmail = async (data: Tdata) => {
         const { email, password, confirmPassword } = data;
 
         if (password !== confirmPassword) {
@@ -42,8 +43,8 @@ const SignupPage = () => {
             localStorage.setItem('authToken', token);
             navigate('/login');
         } catch (error) {
-            console.log(error);
-            setError(error.message);
+           const message = error as {message: string}
+            setError(message?.message);
             setAuthing(false);
         }
     };
@@ -85,7 +86,7 @@ const SignupPage = () => {
                         {errors.confirmPassword && <div className='text-red-500'>{errors.confirmPassword.message}</div>}
                     </form>
 
-                    {error && <div className='text-red-500 mb-4'>{error}</div>}
+                    {error !== undefined && <div className='text-red-500 mb-4'>{error}</div>}
 
                     <button
                         type='submit'

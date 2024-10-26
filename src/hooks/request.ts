@@ -48,6 +48,5 @@ export const fetchPhotos = async (albumId: string) => {
 
 export const fetchAlbums = async () => {
     const { data } = await axiosInstance.get('/albums');
-    console.log(data);
     return data;
 };

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { fetchAlbums } from '../hooks/request';
 import { Album } from '../types';
@@ -7,10 +7,10 @@ import { Album } from '../types';
 const UserAlbumPage: React.FC = () => {
     const { userId } = useParams<{ userId: string }>();
     const navigate = useNavigate();
-
+    const [searchParams] = useSearchParams();
     const { data: albums, isLoading, error } = useQuery<Album[], Error>({
         queryKey: ['albums', userId],
-        queryFn: () => fetchAlbums(Number(userId)),
+        queryFn: () => fetchAlbums(),
     });
 
     if (isLoading) return <div className="text-center mt-10 text-lg text-blue-500">Loading albums...</div>;
@@ -25,7 +25,7 @@ const UserAlbumPage: React.FC = () => {
                 backgroundPosition: 'center'
             }}
         >
-            <h1 className="text-3xl font-bold text-white text-center mb-8">Albums of User {userId}</h1>
+            <h1 className="text-3xl font-bold text-white text-center mb-8">Albums of  {searchParams.get('user')}</h1>
 
             <button
                 className="mb-4 bg-blue-500 text-white py-2 px-4 rounded"

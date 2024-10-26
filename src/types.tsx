@@ -17,3 +17,9 @@ export interface Photo {
     thumbnailUrl:string;
     title: string;
 }
+export interface Tdata {
+email:string;
+password:string;
+confirmPassword:string
+}
+

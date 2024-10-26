@@ -83,9 +83,9 @@ const PhotoPage: React.FC = () => {
                         <button
                             type="submit"
                             className="w-full bg-blue-600 text-white rounded-lg py-3 font-semibold transition duration-300 hover:bg-blue-700 hover:shadow-lg"
-                            disabled={mutation.isLoading}
+                            disabled={mutation.isPending}
                         >
-                            {mutation.isLoading ? 'Updating...' : 'Update Title'}
+                            {mutation.isPending ? 'Updating...' : 'Update Title'}
                         </button>
                     </form>
                 </div>
@@ -95,7 +95,7 @@ const PhotoPage: React.FC = () => {
                 onClick={() => navigate(-1)}
                 className="mt-8 bg-gray-600 text-white rounded-lg px-6 py-3 font-semibold hover:bg-gray-700 transition duration-300 mx-auto block"
             >
-                Go Back
+                Go Back To Photos
             </button>
         </div>
     );
