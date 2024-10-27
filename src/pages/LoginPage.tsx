@@ -4,13 +4,14 @@ import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { auth } from '../firebaseConfig';
 import LandingPage from './LandingPage';
+import { Tdata } from '../types';
 
 const LoginPage = () => {
     const navigate = useNavigate();
     const [authing, setAuthing] = useState(false);
     const [error, setError] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
-    const { register, handleSubmit, formState: { errors } } = useForm();
+    const { register, handleSubmit, formState: { errors } } = useForm<Tdata>();
 
     const signInWithGoogle = async () => {
         setAuthing(true);
@@ -20,14 +21,14 @@ const LoginPage = () => {
             const token = await response.user.getIdToken();
             localStorage.setItem('authToken', token);
             setSuccessMessage('User logged in successfully!');
-            navigate('/user');
+            navigate('/');
         } catch (error) {
             console.log(error);
             setAuthing(false);
         }
     };
 
-    const signInWithEmail = async (data) => {
+    const signInWithEmail = async (data:Tdata) => {
         setAuthing(true);
         setError('');
         setSuccessMessage('');
@@ -37,9 +38,10 @@ const LoginPage = () => {
             const token = await response.user.getIdToken();
             localStorage.setItem('authToken', token);
             setSuccessMessage('User logged in successfully!');
-            navigate('/user');
+            navigate('/');
         } catch (error) {
-            if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+            const errorResponse = error as {code:string}
+            if (errorResponse.code === 'auth/user-not-found' || errorResponse.code === 'auth/wrong-password') {
                 setError('Invalid login credentials. Please check your email and password.');
             } else {
                 setError('Invalid login credentials. Please check your email or Password.');

@@ -1,12 +1,13 @@
-export interface User {
+export interface TUser {
     id: number;
     name: string;
     username:string;
     email:string;
 }
 
-export interface Album {
-    id: number;
+export interface TAlbum {
+    album:TAlbum;
+    id: string | number ;
     userId: number;
     title: string;
 }

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import LogoutButton from '../pages/LogoutPage';
+import LogoutPage from '../pages/LogoutPage';
 
 const Navbar: React.FC = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -31,8 +31,7 @@ const Navbar: React.FC = () => {
                 <Link to="/login" className="text-white text-2xl font-bold">MyPhotoApp</Link>
                 <div className="hidden md:flex space-x-4">
                     <Link to="/login" className="text-gray-300 hover:text-white">Home</Link>
-                    <Link to="/user" className="text-gray-300 hover:text-white">User</Link>
-                    <LogoutButton/>
+                    <LogoutPage/>
                 </div>
                 <div className="md:hidden">
                     <button
@@ -46,8 +45,7 @@ const Navbar: React.FC = () => {
             {isOpen && (
                 <div className="md:hidden bg-gray-700">
                     <Link to="/" className="block text-gray-300 hover:text-white p-2">Home</Link>
-                    <Link to="/user" className="block text-gray-300 hover:text-white p-2">User</Link>
-                <LogoutButton/>
+                <LogoutPage/>
                 </div>
             )}
         </nav>

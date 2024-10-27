@@ -1,5 +1,3 @@
-import React from 'react';
-
 const LandingPage = () => {
     return (
         <div className="landing bg-hero-pattern bg-cover bg-center min-h-screen flex flex-col justify-center items-center text-blue-700">

@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getAuth, signOut } from 'firebase/auth';
 
-const LogoutButton: React.FC = () => {
+const LogoutPage: React.FC = () => {
     const navigate = useNavigate();
     const auth = getAuth();
 
@@ -30,4 +30,4 @@ const LogoutButton: React.FC = () => {
     );
 };
 
-export default LogoutButton;
+export default LogoutPage;

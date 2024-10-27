@@ -2,13 +2,13 @@ import React from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { fetchAlbums } from '../hooks/request';
-import { Album } from '../types';
+import { TAlbum } from '../types';
 
 const UserAlbumPage: React.FC = () => {
     const { userId } = useParams<{ userId: string }>();
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
-    const { data: albums, isLoading, error } = useQuery<Album[], Error>({
+    const { data: albums, isLoading, error } = useQuery<TAlbum[], Error>({
         queryKey: ['albums', userId],
         queryFn: () => fetchAlbums(),
     });
@@ -28,19 +28,19 @@ const UserAlbumPage: React.FC = () => {
             <h1 className="text-3xl font-bold text-white text-center mb-8">Albums of  {searchParams.get('user')}</h1>
 
             <button
-                className="mb-4 bg-blue-500 text-white py-2 px-4 rounded"
-                onClick={() => navigate('/user')}
+                className="mb-4 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-900"
+                onClick={() => navigate('/')}
             >
-                Back to User Page
+                Back to home Page
             </button>
 
             <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {albums?.map((album: Album) => (
+                {albums?.map((album: TAlbum) => (
                     <li key={album.id} className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-200">
                         <p className="text-xl font-semibold text-gray-800">{album.title}</p>
 
                         <button
-                            className="mt-4 bg-blue-500 text-white py-2 px-4 rounded"
+                            className="mt-4 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-900"
                             onClick={() => navigate(`/albums/${album.id}`)}
                         >
                             View Photos

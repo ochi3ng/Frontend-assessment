@@ -1,5 +1,5 @@
 import axiosInstance from './api';
-import { User } from '../types';
+import { TAlbum, TUser } from '../types';
 
 export const fetchUserById = async (userId: string) => {
     const { data } = await axiosInstance.get(`/users/${userId}`);
@@ -16,7 +16,7 @@ export const fetchUserAlbums = async (userId: string) => {
     return data;
 };
 
-export const fetchUsers = async (): Promise<User[]> => {
+export const fetchUsers = async (): Promise<TUser[]> => {
     const { data } = await axiosInstance.get('/users');
     return data;
 };
@@ -41,7 +41,7 @@ export const updatePhotoTitle = async (photoId: string, title: string) => {
     return data;
 };
 
-export const fetchPhotos = async (albumId: string) => {
+export const fetchPhotos = async (albumId: string | number): Promise<TAlbum> => {
     const { data } = await axiosInstance.get(`/photos?albumId=${albumId}`);
     return data;
 };

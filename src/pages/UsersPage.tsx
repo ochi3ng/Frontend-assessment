@@ -1,6 +1,6 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Album, User } from '../types';
+import { TAlbum, TUser, } from '../types';
 import { fetchUsers, fetchAlbums } from '../hooks/request';
 import { useNavigate } from 'react-router-dom';
 import LoadingPage from './LoadingPage';
@@ -27,10 +27,10 @@ const UsersPage: React.FC = () => {
         return <div className="text-red-500 text-center mt-10 text-lg">Error loading albums</div>;
     }
     const albumCountByUserId: Record<number, number> = {};
-    albums?.forEach((album: Album) => {
+    albums?.forEach((album: TAlbum) => {
         albumCountByUserId[album.userId] = (albumCountByUserId[album.userId] || 0) + 1;
     });
-    const viewTitle = (user) => {    
+    const viewTitle = (user:TUser) => {    
         navigate(`/user-albums/${user.id}?user=${user.name}`)
     }
 
@@ -45,10 +45,10 @@ const UsersPage: React.FC = () => {
         >
             <h1 className="text-3xl text-white font-bold text-center mb-8">Users List</h1>
             <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {users?.map((user: User) => (
+                {users?.map((user: TUser) => (
                     <li
                         key={user.id}
-                        className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-200"
+                        className="bg-gray-500 text-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-200"
                     >
                         <div className="bg-white shadow-md rounded-lg p-4 max-w-md mx-auto">
                             <p className="text-xl font-bold text-gray-800 mb-2">
@@ -65,7 +65,7 @@ const UsersPage: React.FC = () => {
                             </span>
                         </div>
                         <button
-                            className="mt-4 bg-blue-500 text-white py-2 px-4 rounded"
+                            className="mt-4 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-900"
                             onClick={() => viewTitle(user)}
                         >
                             View Albums

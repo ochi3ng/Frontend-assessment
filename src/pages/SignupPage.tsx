@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { getAuth, GoogleAuthProvider, signInWithPopup, createUserWithEmailAndPassword } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -19,7 +19,7 @@ const SignupPage = () => {
             const response = await signInWithPopup(auth, new GoogleAuthProvider());
             const token = await response.user.getIdToken();
             localStorage.setItem('authToken', token);
-            navigate('/user');
+            navigate('/');
         } catch (error) {
             console.log(error);
             setAuthing(false);
@@ -39,8 +39,7 @@ const SignupPage = () => {
 
         try {
             const response = await createUserWithEmailAndPassword(auth, email, password);
-            const token = await response.user.getIdToken();
-            localStorage.setItem('authToken', token);
+           await response.user.getIdToken();
             navigate('/login');
         } catch (error) {
            const message = error as {message: string}
