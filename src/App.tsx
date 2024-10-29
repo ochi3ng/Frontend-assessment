@@ -15,6 +15,7 @@ import PublicRoute from './components/PublicRoute';
 const App: React.FC = () => {
   return (
     <div>
+
       <Navbar />
       <Routes>
         <Route element={<PublicRoute redirectPath="/" />}>

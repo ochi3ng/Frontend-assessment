@@ -7,10 +7,15 @@ const LogoutPage: React.FC = () => {
     const auth = getAuth();
 
     const handleLogout = async () => {
+        const userConfirmed = window.confirm("Are you sure you want to log out?");
+
+        if (!userConfirmed) return;
+
         const tokenKey = 'authToken';
         if (localStorage.getItem(tokenKey)) {
             localStorage.removeItem(tokenKey);
         }
+
         try {
             await signOut(auth);
             console.log("User logged out successfully");
